@@ -1,0 +1,72 @@
+	<html>
+<head>
+	<base href="./">
+	<style>
+		#react-container{
+			border-width: 3px;
+			border-style: solid;
+		}
+
+        #vue-container {
+            border-width: 3px;
+            border-style: solid;
+        }
+
+        #angular3-container {
+            border-width: 3px;
+            border-style: solid;
+        }
+
+		.grid{
+			display: grid;
+			grid-template-columns: 1fr 1fr;
+
+			gap: 5px;
+		}
+	</style>
+</head>
+<body>
+	<div class="grid">
+		<div id="react-container">
+		</div>
+
+		<div id="vue-container">
+		</div>
+
+		<div id="angular3-container">
+		</div>
+	</div>
+	<script>
+		window.onload = () => {
+			function loadElement(uniqueName, moduleName, uri) {
+				let script = document.createElement("script");
+				script.src = uri;
+				script.onload = async () => {
+					//await window.react.init({});
+					let factory = await window[uniqueName].get(moduleName);
+					let module = await factory();
+					let ElementClass = customElements.get(`${uniqueName}-element`);
+
+					let element = new ElementClass();
+					document.getElementById(`${uniqueName}-container`).appendChild(element);
+				};
+				document.body.appendChild(script);
+			}
+
+			// react
+			loadElement("react", "./web-components", "https://witty-wave-0a695f710.azurestaticapps.net/remoteEntry.js");
+
+			// vue
+			loadElement("vue", "./web-components", "https://mango-field-0d0778c10.azurestaticapps.net/remoteEntry.js");
+
+			// angular
+			let script = document.createElement("script");
+			script.src = "https://unpkg.com/zone.js@0.10.3/dist/zone.js";
+			script.onload = async () => {
+				loadElement("angular3", "./web-components", "https://gray-river-0b8c23a10.azurestaticapps.net/remoteEntry.js");
+			};
+			document.body.appendChild(script);
+		};
+	</script>
+</body>
+</html>
